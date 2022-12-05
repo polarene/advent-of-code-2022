@@ -29,7 +29,7 @@ class Rucksack(items: String) {
         ?: error(first + second)
 }
 
-class Group(private val rucksacks: List<String>) {
+class Group(private val rucksacks: Lines) {
     fun badge(): Char =
         rucksacks.map { it.toSet() }
             .reduce { acc, chars -> acc.intersect(chars) }
