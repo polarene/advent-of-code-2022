@@ -34,10 +34,8 @@ class ElvesPair(private val assignment1: IntRange, private val assignment2: IntR
     }
 
     fun overlaps(): Boolean {
-        return assignment2.first in assignment1
-                || assignment2.last in assignment1
-                || assignment1.first in assignment2
-                || assignment1.last in assignment2
+        return assignment1.first <= assignment2.last
+                && assignment1.last >= assignment2.first
     }
 
     private infix fun IntRange.fullyContains(other: IntRange) =
