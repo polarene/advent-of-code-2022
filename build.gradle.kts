@@ -1,10 +1,5 @@
 plugins {
     kotlin("jvm") version "1.7.21"
-    id("com.github.jakemarsden.git-hooks") version "0.0.2"
-}
-
-gitHooks {
-    setHooks(mapOf("pre-commit" to "checkInputs"))
 }
 
 repositories {
@@ -26,17 +21,6 @@ sourceSets {
 tasks {
     test {
         useJUnitPlatform()
-    }
-    register("checkInputs") {
-        doFirst {
-            val violations = sourceSets.map(SourceSet::getResources).flatMap { ss ->
-                ss.files.filter { it.readText().isNotBlank() }
-            }
-            violations.forEach {
-                logger.error("Input file ${it.absolutePath} is not empty! Please clean it up before committing.")
-            }
-            if (violations.isNotEmpty()) error("Input file contents should not be committed. You can clean all of them by running ./gradlew cleanInputs")
-        }
     }
     register("cleanInputs") {
         doFirst {
