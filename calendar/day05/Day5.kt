@@ -37,7 +37,7 @@ typealias Stack = MutableList<Crate>
 
 fun setupCrates(input: Lines): Crates {
     val cratesConfiguration = readConfiguration(input)
-    val stacksCount = countStacks(cratesConfiguration)
+    val stacksCount = countStacks(cratesConfiguration.removeFirst())
     val stacks = initStacks(stacksCount)
     val itemsDistance = 4
     cratesConfiguration
@@ -50,27 +50,23 @@ fun setupCrates(input: Lines): Crates {
     return Crates(stacks)
 }
 
+private fun readConfiguration(input: Lines) =
+    input.takeWhile { it.isNotEmpty() }
+        .reversed()
+        .toMutableList()
+
+private fun countStacks(indicesLine: String) =
+    indicesLine[indicesLine.lastIndex - 1].digitToInt()
+
 private fun initStacks(stacksCount: Int) = buildList<Stack>(stacksCount) {
     repeat(stacksCount) { add(mutableListOf()) }
 }
 
-private fun countStacks(cratesConfiguration: MutableList<String>) = cratesConfiguration.removeFirst()
-    .trim()
-    .split(" ")
-    .last()
-    .toInt()
-
-private fun readConfiguration(input: Lines) = input.takeWhile { it.isNotEmpty() }
-    .reversed()
-    .toMutableList()
-
 val STEP = "move (\\d+) from (\\d+) to (\\d+)".toRegex()
 fun readStep(line: String): Triple<Int, Int, Int> {
-    val (count, from, to) = STEP.matchEntire(line)!!
-        .groupValues.asSequence()
+    val (count, from, to) = STEP.matchEntire(line)!!.groupValues
         .drop(1)
         .map { it.toInt() }
-        .toList()
     return Triple(count, from - 1, to - 1)
 }
 
@@ -78,12 +74,10 @@ class Crates(private val stacks: List<Stack>) {
     fun top(): String = stacks.map { it.last() }.joinToString("")
 
     fun move(from: Int, to: Int) {
-        require(stacks[from].isNotEmpty()) { "can't move $from -> $to" }
         stacks[to] += stacks[from].removeLast()
-    }    
-    
+    }
+
     fun move(count: Int, from: Int, to: Int) {
-        require(stacks[from].isNotEmpty()) { "can't move $from -> $to" }
         stacks[to] += buildList {
             repeat(count) { add(0, stacks[from].removeLast()) }
         }
