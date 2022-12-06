@@ -25,8 +25,7 @@ class Rucksack(items: String) {
     private val first = items.substring(0, items.length / 2)
     private val second = items.substring(items.length / 2)
 
-    fun duplicate(): Char = first.find { it in second }
-        ?: error(first + second)
+    fun duplicate(): Char = first.find { it in second }!!
 }
 
 class Group(private val rucksacks: Lines) {
