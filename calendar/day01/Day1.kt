@@ -14,21 +14,17 @@ class Day1 : Day() {
 
     private fun Lines.mostCalories(take: Int) =
         chunkedWhile { it.isNotEmpty() }
-            .map { it.map(String::toInt).sum() }
+            .map { it.sumOf(String::toInt) }
             .sorted()
             .takeLast(take)
 }
 
 fun <T> Iterable<T>.chunkedWhile(predicate: (T) -> Boolean): List<List<T>> {
-    val result = mutableListOf<List<T>>()
-    var chunk = mutableListOf<T>()
-    for (element in this) {
-        if (predicate(element)) {
-            chunk += element
+    return fold(listOf(listOf())) { acc, t ->
+        if (predicate(t)) {
+            acc.dropLast(1) + listOf(acc.last() + t)
         } else {
-            result += chunk
-            chunk = mutableListOf()
+            acc + listOf(listOf())
         }
     }
-    return result
 }
