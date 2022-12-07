@@ -13,12 +13,7 @@ class Day6 : Day() {
     }
 }
 
-private fun String.findMarker(distinctChars: Int): Int {
-    var streamIndex = 0
-    windowed(distinctChars)
-        .first {
-            ++streamIndex
-            it.toSet().size == distinctChars
-        }
-    return streamIndex + distinctChars - 1
-}
+private fun String.findMarker(length: Int) =
+    windowed(length).indexOfFirst { it.allDistinct() } + length
+
+private fun String.allDistinct() = toSet().size == length
