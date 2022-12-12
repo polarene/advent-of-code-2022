@@ -13,7 +13,8 @@ class Day7 : Day() {
         val totalSpace = 70_000_000
         val updateSpace = 30_000_000
         val fs = Filesystem.init(input)
-        val needed = updateSpace - totalSpace + fs.root.size()
+        val unused = totalSpace - fs.size()
+        val needed = updateSpace - unused
         return fs.findDirsBySize { it >= needed }.min()
     }
 }
@@ -44,7 +45,7 @@ class Node(
     override fun toString() = "- $name ($size)"
 }
 
-class Filesystem(val root: Node) {
+class Filesystem(private val root: Node) {
     companion object {
         fun init(lines: Lines): Filesystem {
             val root = Node("/")
@@ -73,6 +74,10 @@ class Filesystem(val root: Node) {
             listOf(current) + current.children.flatMap { findDirs(it) }
         else
             emptyList()
+    }
+
+    fun size(): Int {
+        return root.size()
     }
 
     override fun toString() = toString(0, root)
